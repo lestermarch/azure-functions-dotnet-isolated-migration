@@ -2,40 +2,6 @@
 
 > Captured from an actual GitHub Copilot Plan mode run against the repository and revision documented in this directory's [README](README.md). The output below is preserved as generated and is a point-in-time example, not current authoritative guidance.
 
-Updated todo list
-
-Read
-
-Read
-
-Read
-
-Read
-
-Read skill `azure-functions-dotnet-isolated-migration`
-
-Read
-
-Read
-
-Read
-
-Read
-
-Read
-
-Read
-
-Read
-
-Read
-
-Read
-
-Read , lines 1 to 80
-
-Read
-
 ## Executive Summary
 
 **Fta.DemoFunc.Api** is a **.NET 6, in-process model** Azure Functions app (Functions runtime v4) with a single HTTP-triggered function. It **must migrate before 10 November 2026** when in-process support ends. The app is small, has no Durable Functions, no framework-only or native dependencies, and its test suite already calls the function class directly rather than through the WebJobs host — this is one of the lowest-risk migration profiles you'll see. I recommend migrating straight to **.NET 8 or .NET 10 isolated worker** (see rationale below) rather than .NET Framework 4.8 isolated.

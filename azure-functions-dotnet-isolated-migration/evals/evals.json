@@ -1,0 +1,41 @@
+{
+  "skill_name": "azure-functions-dotnet-isolated-migration",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I have a C# Azure Functions v4 app targeting .NET 8 in-process. It uses HTTP and Service Bus triggers, a FunctionsStartup class, Application Insights, and GitHub Actions. Assess the repo and give me a precise migration plan to .NET 10 isolated, including the project/package changes, code areas to inspect, tests, and a safe Azure rollout.",
+      "expected_output": "A repository-aware assessment and actionable migration plan covering project files, package replacements, Program.cs, function signatures, logging, CI/CD, local validation, staging slots, runtime setting order, and rollback.",
+      "files": [],
+      "expectations": [
+        "The plan recommends .NET 10 isolated when dependencies support modern .NET.",
+        "The plan identifies removal of Microsoft.NET.Sdk.Functions, Microsoft.Azure.WebJobs.* packages, FunctionsStartup, and FunctionName.",
+        "The rollout explicitly coordinates FUNCTIONS_WORKER_RUNTIME=dotnet-isolated with deployment and recommends a staging slot.",
+        "The plan includes local build, Functions Core Tools, trigger/binding, telemetry, and CI/CD validation."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Our production Function App still uses the .NET in-process model and we may miss the November 10, 2026 retirement date. Explain what the retirement means, then give an operator-focused migration runbook that minimizes downtime and avoids AZFD0013.",
+      "expected_output": "A concise explanation that retirement is loss of support rather than an automatic shutdown, followed by a slot-based runbook with the correct configuration/deployment order and verification steps.",
+      "files": [],
+      "expectations": [
+        "The response distinguishes support retirement from an automatic app shutdown.",
+        "The runbook uses a staging slot and sets dotnet-isolated together with publishing the isolated payload.",
+        "The response explains the temporary runtime/payload mismatch and names AZFD0013.",
+        "The runbook includes post-swap validation and rollback readiness."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Migrate this legacy C# Functions app from in-process to isolated. It is a .NET Framework 4.8 app with Durable Functions, Cosmos DB bindings, custom DI in FunctionsStartup, and no HTTP triggers. What target should we choose and what migration differences matter? Do not edit files; produce an assessment with risks and a test checklist.",
+      "expected_output": "An assessment that selects .NET Framework 4.8 isolated when framework-only dependencies require it, addresses Durable/Cosmos/DI migration differences, and provides a comprehensive test checklist without making edits.",
+      "files": [],
+      "expectations": [
+        "The response chooses .NET Framework 4.8 isolated only because framework-only dependencies may require it and explains the tradeoff.",
+        "The response identifies Durable and Cosmos worker extension package changes.",
+        "The response explains moving FunctionsStartup registrations into Program.cs and using ConfigureFunctionsWorkerDefaults for a non-HTTP app.",
+        "The response provides a risk-based test checklist and does not claim to have edited files."
+      ]
+    }
+  ]
+}

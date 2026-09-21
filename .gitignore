@@ -1,0 +1,11 @@
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local skill/evaluation artifacts
+*-workspace/
+feedback.json
+__pycache__/
+*.pyc

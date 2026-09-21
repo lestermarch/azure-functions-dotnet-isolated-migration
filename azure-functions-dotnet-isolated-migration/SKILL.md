@@ -132,6 +132,15 @@ Summarize:
 - Deployment/slot and rollback status.
 - Remaining risks, unsupported dependencies, or follow-up actions.
 
+## Lessons from end-to-end deployment evaluation
+
+- Assess subscription and hosting-plan constraints before choosing the Azure target. In the evaluated subscription, policy disabled storage shared-key authentication and public storage access, requiring identity-based `AzureWebJobsStorage` with Blob, Queue, and Table data-plane RBAC roles.
+- Do not assume every plan supports the selected .NET version. The evaluated Linux Consumption plan reported `DOTNET-ISOLATED|10.0` but remained unavailable; moving the app to a supported Linux Dedicated plan allowed the isolated worker to start.
+- For HTTP functions using ASP.NET Core integration, do not assume an in-process POCO parameter will bind identically. Validate request binding end to end. When binding was unreliable, explicitly read the body with `HttpRequest.ReadFromJsonAsync<T>()`; preserve direct business-logic tests through a separate processing method.
+- Validate the complete deployment artifact, not only IaC: runtime setting, platform stack, package URL, package contents, trigger indexing, storage health, and a real HTTP request.
+- Treat storage health failures separately from worker-code failures. A Function host can index isolated functions while reporting `Unable to access AzureWebJobsStorage` and returning unhealthy responses; query host telemetry and RBAC before changing application code.
+- Run vulnerability checks during migration and update stale direct or transitive dependencies where practical. The sample's old `Npgsql` warning was removed by upgrading the application dependency; integration-test dependencies also required updates.
+
 ## Troubleshooting priorities
 
 - `AZFD0013`: runtime setting and deployed payload are temporarily mismatched; complete both rollout operations.

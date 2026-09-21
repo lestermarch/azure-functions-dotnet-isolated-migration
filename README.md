@@ -14,12 +14,14 @@ azure-functions-dotnet-isolated-migration/
 examples/
 ├── README.md
 ├── migration-analysis.prompt.md
-└── migration-analysis-output.md
+├── migration-analysis-output.md
+└── end-to-end-evaluation-summary.md
 ```
 
 - [`azure-functions-dotnet-isolated-migration/SKILL.md`](azure-functions-dotnet-isolated-migration/SKILL.md) contains the agent skill.
 - [`examples/migration-analysis.prompt.md`](examples/migration-analysis.prompt.md) is a reusable GitHub Copilot Plan mode assessment prompt.
 - [`examples/migration-analysis-output.md`](examples/migration-analysis-output.md) is an actual assessment produced from the prompt and skill.
+- [`examples/end-to-end-evaluation-summary.md`](examples/end-to-end-evaluation-summary.md) documents the full Azure deployment, migration, and validation flow that was run against a public sample app.
 - [`azure-functions-dotnet-isolated-migration/evals/evals.json`](azure-functions-dotnet-isolated-migration/evals/evals.json) contains representative evaluation scenarios.
 
 ## Use the skill

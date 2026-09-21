@@ -12,5 +12,6 @@ The sample contains a .NET 6 Azure Functions v4 app using the in-process model, 
 
 - [`migration-analysis.prompt.md`](migration-analysis.prompt.md) — the assessment prompt used in GitHub Copilot Plan mode.
 - [`migration-analysis-output.md`](migration-analysis-output.md) — the actual output captured from the run.
+- [`end-to-end-evaluation-summary.md`](end-to-end-evaluation-summary.md) — a summary of the end-to-end Azure deployment, migration, and validation process including the real-world issues encountered and the operational lessons learned.
 
 The output is intentionally retained as generated, including the activity-summary lines before and after the assessment. It represents a point-in-time example rather than authoritative current guidance. Re-run the prompt against your own repository and verify recommendations against current Microsoft Learn documentation.

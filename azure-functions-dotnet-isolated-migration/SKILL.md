@@ -40,6 +40,7 @@ Produce an assessment with: current state, target recommendation, blockers, file
 - Use **.NET 10 isolated** when the app and all dependencies are proven compatible with modern .NET. This is the preferred strategic target in the current guidance.
 - For an existing **.NET Framework 4.8** app with unknown or framework-only dependencies, use **.NET Framework 4.8 isolated** as the lowest-risk retirement migration. Treat a later move to .NET 10 as a separate modernization unless compatibility is already proven.
 - Audit direct and transitive packages, native/COM dependencies, Windows-only APIs, hosting plan, and OS before choosing. Do not assume that the current target alone proves a dependency requirement or that all dependencies can move to modern .NET.
+- Confirm that the target hosting plan supports the selected .NET version. .NET 9 is the last .NET version added to Linux Consumption; use Flex Consumption, Elastic Premium, or Dedicated hosting for .NET 10 on Linux. Do not rely only on a runtime value accepted by ARM or shown by CLI discovery—verify the current support matrix.
 - If the app is C# script (`.csx`), convert it to the project model before applying the project migration.
 - If the app is Durable Functions, use the Durable migration guidance as well as this workflow.
 
@@ -108,9 +109,10 @@ Check that generated output contains the worker host and no stale in-process pac
 Before publishing, plan these changes together:
 
 1. Set `FUNCTIONS_WORKER_RUNTIME` to `dotnet-isolated`.
-2. Deploy the migrated isolated project.
+2. Set the platform stack to the selected isolated .NET version.
+3. Deploy the migrated isolated artifact using a versioned or immutable package reference.
 
-Changing only one creates an interim runtime/payload mismatch (`AZFD0013`). Prefer a staging slot:
+Changing only part of this set creates an interim runtime, stack, or payload mismatch (`AZFD0013`). Prefer a staging slot:
 
 1. Create or use a non-production slot.
 2. Set the slot's runtime setting to `dotnet-isolated` and update the stack version if needed.
@@ -135,10 +137,10 @@ Summarize:
 ## Lessons from end-to-end deployment evaluation
 
 - Assess subscription and hosting-plan constraints before choosing the Azure target. In the evaluated subscription, policy disabled storage shared-key authentication and public storage access, requiring identity-based `AzureWebJobsStorage` with Blob, Queue, and Table data-plane RBAC roles.
-- Do not assume every plan supports the selected .NET version. The evaluated Linux Consumption plan reported `DOTNET-ISOLATED|10.0` but remained unavailable; moving the app to a supported Linux Dedicated plan allowed the isolated worker to start.
+- Do not assume every plan supports the selected .NET version. .NET 10 is not supported on Linux Consumption even if configuration tooling accepts `DOTNET-ISOLATED|10.0`; migrate to Flex Consumption, Elastic Premium, or Dedicated hosting before deploying that target.
 - For HTTP functions using ASP.NET Core integration, do not assume an in-process POCO parameter will bind identically. Validate request binding end to end. When binding was unreliable, explicitly read the body with `HttpRequest.ReadFromJsonAsync<T>()`; preserve direct business-logic tests through a separate processing method.
 - Validate the complete deployment artifact, not only IaC: runtime setting, platform stack, package URL, package contents, trigger indexing, storage health, and a real HTTP request.
-- Treat storage health failures separately from worker-code failures. A Function host can index isolated functions while reporting `Unable to access AzureWebJobsStorage` and returning unhealthy responses; query host telemetry and RBAC before changing application code.
+- Treat storage health failures separately from worker-code failures. A Function host can index and execute an HTTP function while reporting `Unable to access AzureWebJobsStorage`; verify both data-plane RBAC and network reachability, and do not call the deployment production-ready until host storage health is clean.
 - Run vulnerability checks during migration and update stale direct or transitive dependencies where practical. The sample's old `Npgsql` warning was removed by upgrading the application dependency; integration-test dependencies also required updates.
 
 ## Troubleshooting priorities
